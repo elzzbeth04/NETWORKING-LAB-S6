@@ -6,8 +6,8 @@
 
 int main() {
     int sockfd, newsock;
-    struct sockaddr_in serveraddr, clientaddr;
-    socklen_t len = sizeof(clientaddr);
+    struct sockaddr_in server, client;
+    socklen_t len = sizeof(client);
     char buffer[1024];
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);

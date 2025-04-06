@@ -5,19 +5,19 @@
 #include<arpa/inet.h>
 #include<sys/socket.h>
 int main()
-{
+{   
     int server_socket,client_socket;
     char buffer[1024];
     struct sockaddr_in server_addr,client_addr;
     socklen_t addr_size;
     
-    server_socket=socket(AF_INET,SOCK_STREAM,0);
+    server_socket=socket(AF_INET,SOCK_STREAM,0);//cREATED THE SOCKET FOR THE SERVER
     
-    server_addr.sin_family=AF_INET;
+    server_addr.sin_family=AF_INET;//CONFIGURED THESOCKET WITH THE IP ADDRESS
     server_addr.sin_port=htons(12345);
     server_addr.sin_addr.s_addr=INADDR_ANY;
     
-    bind(server_socket,(struct sockaddr*)&server_addr,sizeof(server_addr));
+    bind(server_socket,(struct sockaddr*)&server_addr,sizeof(server_addr));//BINDED
     
     listen(server_socket,1);
     printf("waiting for connection...");
