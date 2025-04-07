@@ -2,39 +2,52 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-int ack(){
-    return rand() % 2;  // Random 0 or 1
+
+int ack() {
+    return rand() % 10;  // Random 0 or 1
 }
 
-int main(){
-    int n, ws, wt, i = 1, j;
-
+int main() {
+    int n, ws, wt;
     srand(time(0));
 
     printf("Packets to send: ");
     scanf("%d", &n);
     printf("Window size: ");
     scanf("%d", &ws);
-    printf("Wait time: ");
+    printf("Wait time (on failure): ");
     scanf("%d", &wt);
 
-    while(i <= n) {
-        // Send window of ws packets
-        printf("Sending packets %d to %d...\n", i, i+ws-1);
+    int i = 1;
+
+    while (i <= n) {
+        int allAcked = 1;
+        int end = (i + ws - 1 <= n) ? i + ws - 1 : n;
+
+        printf("Sending packets %d to %d...\n", i, end);
         sleep(1);
 
-        // Check if ACK received for first packet in window
-        if(ack()) {
-            printf("ACK received for packet %d\n\n", i);
-            i++;  // Slide window
+        for (int j = i; j <= end; j++) {
+            if (ack()) {
+                printf("ACK received for packet %d\n", j);
+            } else {
+                printf("ACK lost for packet %d! Will resend from this packet.\n", j);
+                i = j; // Go back to this packet
+                allAcked = 0;
+                break;
+            }
         }
-        else {
-            printf("ACK lost for packet %d! Resending window after %d sec...\n\n", i, wt);
+
+        if (allAcked) {
+            i = end + 1; // Slide window
+        } else {
+            printf("Resending window after %d seconds...\n\n", wt);
             sleep(wt);
         }
+
+        printf("\n");
     }
 
-    printf("All packets sent!\n");
+    printf("All packets sent successfully!\n");
     return 0;
 }
-
